@@ -32,7 +32,7 @@ if [[ "$(uname -m)" != "x86_64" ]]; then
 fi
 
 if [[ -z "$TARGET_IP" ]]; then
-  read -r -p "Target server public IPv4: " TARGET_IP
+  read -r -p "Target server public IPv4: " TARGET_IP </dev/tty
 fi
 if [[ ! "$TARGET_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
   echo "Invalid IPv4 address: $TARGET_IP" >&2
@@ -49,7 +49,7 @@ fi
 install -d -o cooper -g cooper -m 0755 /home/cooper
 
 if [[ -z "${GH_TOKEN:-}" ]]; then
-  read -r -s -p "GitHub token (private repo Contents: read): " GH_TOKEN
+  read -r -s -p "GitHub token (private repo Contents: read): " GH_TOKEN </dev/tty
   echo
   export GH_TOKEN
 fi

@@ -20,9 +20,10 @@ The private backup repository requires a fine-grained GitHub token with only
 `Contents: read` permission. The installer prompts for both that token and the
 backup passphrase; neither should be included in the command line.
 
+On the fresh server, run one command as root:
+
 ```bash
-git clone https://github.com/geedama/server-clone.git
-sudo ./server-clone/install.sh --target-ip 38.47.121.14
+curl -fsSL https://raw.githubusercontent.com/geedama/server-clone/main/bootstrap.sh | bash -s -- --target-ip 38.47.121.14
 ```
 
 The retained proxy certificate is valid for `proxy.local`, not the new IP.

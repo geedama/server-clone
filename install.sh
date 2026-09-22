@@ -57,12 +57,24 @@ fi
 work_dir="$(mktemp -d)"
 trap 'rm -rf "$work_dir"; unset GH_TOKEN' EXIT
 
-download_args=(--repo "$BACKUP_REPO" --dir "$work_dir" --pattern 'codex-server-backup.tar.zst.age*')
-if [[ -n "$RELEASE_TAG" ]]; then
-  gh release download "$RELEASE_TAG" "${download_args[@]}"
-else
-  gh release download "${download_args[@]}"
+if ! gh api "repos/$BACKUP_REPO" >/dev/null 2>&1; then
+  cat >&2 <<EOF
+Cannot access the private repository: $BACKUP_REPO
+Create a fine-grained token owned by geedama, select only
+server-clone-backup, and grant Repository permissions -> Contents: Read-only.
+EOF
+  exit 1
 fi
+
+if [[ -z "$RELEASE_TAG" ]]; then
+  RELEASE_TAG="$(gh api "repos/$BACKUP_REPO/releases/latest" --jq .tag_name)"
+fi
+
+echo "Downloading release: $RELEASE_TAG"
+gh release download "$RELEASE_TAG" \
+  --repo "$BACKUP_REPO" \
+  --dir "$work_dir" \
+  --pattern 'codex-server-backup.tar.zst.age*'
 
 (
   cd "$work_dir"
